@@ -50,11 +50,8 @@ Follow the steps below to use the 3D drone detection model:
    python3 test_detection3d.py
    ```
 
-License
+## License
 
 This project is licensed under the MIT License. Feel free to use, modify, and distribute the code for both non-commercial and commercial purposes.
-Acknowledgments
-
-We appreciate your interest in the 3D drone detection model. If you have any questions or feedback, please contact us at [your.email@example.com].
 
 Happy coding!

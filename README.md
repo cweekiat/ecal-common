@@ -5,7 +5,7 @@ This repository includes schema definitions for serialization.
 ## 3D Drone Detection Model
 
 This repository contains a 3D drone detection model designed for target drone detection, tracking, position estimation, and velocity estimation.
-
+![](python/assets/demo_gif.gif)
 ## Features
 
 The code in this repository provides the following functionalities:
@@ -50,9 +50,9 @@ Follow the steps below to use the 3D drone detection model:
    python3 test_detection3d.py
    ```
 
-![Watch Demo 1:](python/assets/demo.mp4)
+[Watch Demo 1](python/assets/demo.mp4)
 
-![Watch Demo 2:](python/assets/demo_depth.mp4)
+[Watch Demo 2](python/assets/demo_depth.mp4)
 
 ## License
 

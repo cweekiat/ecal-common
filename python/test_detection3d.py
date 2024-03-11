@@ -73,9 +73,27 @@ class Detection3d():
                         
                 annotated_frame = results[0].plot()
                 self.image_map["detection"] = annotated_frame
-                
+            
+            elif (imageMsg.encoding == "jpeg"):
+                mat_jpeg = np.frombuffer(imageMsg.data, dtype=np.uint8)
+                mat = cv2.imdecode(mat_jpeg, cv2.IMREAD_GRAYSCALE)
+                mat = mat.reshape((imageMsg.height, imageMsg.width, 1))
+                rgb_img = np.repeat(mat, 3, axis=-1)
+
+                results = model.track(rgb_img, conf=0.3, iou=0.5, persist=True)
+
+                for r in results:
+                    if len(r.boxes.xywh) > 0:
+                        self.target_coord = r.boxes.xywh[0].cpu().numpy()
+                        # print(r.boxes.xywh[0])
+                    else:
+                        self.target_coord = []
+                        
+                annotated_frame = results[0].plot()
+                self.image_map["detection"] = annotated_frame
+
             else:
-                raise RuntimeError("Unused encoding: " + imageMsg.encoding)
+                raise RuntimeError("Unused encoding: " + str(imageMsg.encoding))
             
     def callback_disparity(self, type, topic_name, msg, ts):
             # need to remove the .decode() function within the Python API of ecal.core.subscriber ByteSubscriber
@@ -99,7 +117,7 @@ class Detection3d():
                 disparity = cv2.applyColorMap(disparity, cv2.COLORMAP_JET)
 
                 # Assuming imageMsg contains baseline and fx information
-                max_depth = 5.0
+                max_depth = 20.0
                 min_disparity_threshold = 1e-2  # Adjust this threshold based on your scene characteristics
 
                 # Calculate depth, limiting the minimum disparity+
@@ -129,9 +147,9 @@ class Detection3d():
             # print(f"latency host = {odometryMsg.header.latencyHost / 1e6} ms")
 
             if first_message:
-                print(f"bodyFrame = {odometryMsg.bodyFrame}")
-                print(f"referenceFrame = {odometryMsg.referenceFrame}")
-                print(f"velocityFrame = {odometryMsg.velocityFrame}")
+                # print(f"bodyFrame = {odometryMsg.bodyFrame}")
+                # print(f"referenceFrame = {odometryMsg.referenceFrame}")
+                # print(f"velocityFrame = {odometryMsg.velocityFrame}")
                 first_message = False
 
             # print(f"Camera position = {odometryMsg.pose.position.x}, {odometryMsg.pose.position.y}, {odometryMsg.pose.position.z}")
@@ -187,19 +205,10 @@ def main():
 
     # create subscriber and connect callback
     topic1 = "S0/stereo1_l"
-    topic2 = "S0/disparity/stereo1"
+    topic2 = "S0/stereo1/disparity"
     topic3 = "S0/vio_odom"
 
-    # n = len(sys.argv)
-    # if n == 1:
-    #     topic = "S0/stereo1_l"
-    # elif n == 3:
-    #     topic1 = sys.argv[1]
-
-    # else:
-    #     raise RuntimeError("Need to pass in exactly one parameter for topic")
-
-    print(f"Streaming topic {topic1} and {topic2}")
+    print(f"Streaming topic {topic1}, {topic2} and {topic3}")
 
     detection = Detection3d()
     sub_image = CapnpSubscriber("Image", topic1)
@@ -209,7 +218,7 @@ def main():
     sub_disparity.set_callback(detection.callback_disparity)
     sub_odom.set_callback(detection.callback_odom)
 
-    dt = 10 # ms
+    dt = 30 # ms
     prev_target_pos = [0, 0, 0]
         
     # idle main thread
@@ -220,18 +229,33 @@ def main():
             current_target_vel = detection.get_target_velocity(curr_target_pos, prev_target_pos, dt)
             prev_target_pos = curr_target_pos
         
+        counter = 0
         for im in detection.image_map:
+            counter += 1
             if detection.depth is not None and len(detection.target_coord) > 1:
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"u: {detection.target_3d_coord[0]:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"v: {detection.target_3d_coord[1]:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"depth: {detection.target_3d_coord[2]:.2f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"x: {detection.target_position[0]:.2f}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"y: {detection.target_position[1]:.2f}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"z: {detection.target_position[2]:.2f}", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"u: {detection.target_3d_coord[0]:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"v: {detection.target_3d_coord[1]:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"depth: {detection.target_3d_coord[2]:.2f}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"x: {detection.target_position[0]:.2f}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"y: {detection.target_position[1]:.2f}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"z: {detection.target_position[2]:.2f}", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"vx: {detection.target_velocity[0]:.2f}", (520, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"vy: {detection.target_velocity[1]:.2f}", (520, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                detection.image_map[im] = cv2.putText(detection.image_map[im], f"vz: {detection.target_velocity[2]:.2f}", (520, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"vx: {detection.target_velocity[0]:.2f}", (520, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"vy: {detection.target_velocity[1]:.2f}", (520, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # detection.image_map[im] = cv2.putText(detection.image_map[im], f"vz: {detection.target_velocity[2]:.2f}", (520, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+                u = detection.target_coord[0]
+                v = detection.target_coord[1]
+                depth = detection.target_3d_coord[2]
+                x, y, z = detection.target_position[0], detection.target_position[1], detection.target_position[2]
+                vx, vy, vz = detection.target_velocity[0], detection.target_velocity[1], detection.target_velocity[2]
+
+                detection.image_map[im] = cv2.putText(detection.image_map[im], f"depth: {depth:.2f}", (int(u)+20, int(v)+10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                detection.image_map[im] = cv2.putText(detection.image_map[im], f"({x:.2f}, {y:.2f}, {z:.2f})", (int(u)+20, int(v)+30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                detection.image_map[im] = cv2.putText(detection.image_map[im], f"({vx:.2f}, {vy:.2f}, {vz:.2f})", (int(u)+20, int(v)+50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                
+                # print(f"Target UAV position = {detection.target_position[0]:.2f}, {detection.target_position[1]:.2f}, {detection.target_position[2]:.2f}")
+                # print(f"Target UAV velocity = {detection.target_velocity[0]:.2f}, {detection.target_velocity[1]:.2f}, {detection.target_velocity[2]:.2f}")
 
             cv2.imshow(im, detection.image_map[im])
 

@@ -38,6 +38,14 @@ Follow the steps below to use the 3D drone detection model:
    pip install -r requirements.txt
 
 3. **Running Detection Program:**
+   ```bash
+   cd ecal-common/python/
+   python3 test_detection3d.py
+   ```
+
+
+
+3. **OLD: Running Detection Program:**
 
   3.1 In the first terminal, SSH into Vilota Camera and run:
    ```bash

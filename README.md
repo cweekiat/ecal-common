@@ -44,8 +44,8 @@ Follow the steps below to use the 3D drone detection model:
    ```
 
 
-
-3. **OLD: Running Detection Program:**
+<!--
+4. **OLD: Running Detection Program:**
 
   3.1 In the first terminal, SSH into Vilota Camera and run:
    ```bash
@@ -59,7 +59,7 @@ Follow the steps below to use the 3D drone detection model:
    ```bash
    python3 test_detection3d.py
    ```
-
+-->
 [Watch Demo 1](python/assets/demo.mp4)
 
 [Watch Demo 2](python/assets/demo_depth.mp4)

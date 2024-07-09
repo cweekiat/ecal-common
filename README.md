@@ -28,7 +28,15 @@ The code in this repository provides the following functionalities:
 
 Follow the steps below to use the 3D drone detection model:
 
-1. **Install Ecal**
+1. **Install MiniConda3**
+  - Download [MiniConda Package](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
+   ```bash
+   cd ~/Downloads
+   bash Miniconda3-latest-Linux-x86_64.sh
+   ```
+
+3. **Install Ecal**
+   In a new terminal
    ```bash
    sudo add-apt-repository ppa:ecal/ecal-5.12
    sudo apt-get update
@@ -36,16 +44,19 @@ Follow the steps below to use the 3D drone detection model:
    
    sudo apt install python3-ecal5
    ```
-2. **Clone the Repository:**
+5. **Create Conda Environment**
    ```bash
    cd ecal-common/python
+   conda create -n vilota python=3.10
+   ```
 
-3. **Install Dependencies:**
+6. **Install Dependencies:**
    ```bash
+   conda activate vilota
    pip install matplotlib==3.5.1 numpy==1.25.0 pycapnp==1.3.0 ultralytics==8.0.220 protobuf
    ```
 
-4. **Running Detection Program:**
+7. **Running Detection Program:**
    ```bash
    python3 test_detection3d.py
    ```

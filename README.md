@@ -60,6 +60,18 @@ Follow the steps below to use the 3D drone detection model:
    ```bash
    python3 test_detection3d.py
    ```
+8. **If you face this error**
+   ```bash
+   import ecal.core.core as ecal_core
+   ModuleNotFoundError: No module named 'ecal'
+   ```
+   1. Open test_detection3.py
+   2. Add these lines to the top of the python file
+      ```bash
+      import sys
+      print(sys.path)
+      sys.path.append('/usr/local/lib/python3.8/dist-packages')
+      ```
 
 
 <!--

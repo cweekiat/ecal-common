@@ -28,18 +28,25 @@ The code in this repository provides the following functionalities:
 
 Follow the steps below to use the 3D drone detection model:
 
-1. **Clone the Repository:**
+1. **Install Ecal**
    ```bash
-   git clone https://github.com/cweekiat/ecal-common.git
-   cd ecal-common
+   sudo add-apt-repository ppa:ecal/ecal-5.12
+   sudo apt-get update
+   sudo apt-get install ecal
+   
+   sudo apt install python3-ecal5
+   ```
+2. **Clone the Repository:**
+   ```bash
+   cd ecal-common/python
 
-2. **Install Dependencies:**
+3. **Install Dependencies:**
    ```bash
-   pip install -r requirements.txt
+   pip install matplotlib==3.5.1 numpy==1.25.0 pycapnp==1.3.0 ultralytics==8.0.220 protobuf
+   ```
 
-3. **Running Detection Program:**
+4. **Running Detection Program:**
    ```bash
-   cd ecal-common/python/
    python3 test_detection3d.py
    ```
 

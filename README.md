@@ -69,7 +69,7 @@ Follow the steps below to use the 3D drone detection model:
    2. Add these lines to the top of the python file
       ```bash
       import sys
-      sys.path.append('/usr/lib/python3/dist-packages')
+      sys.path.append('/usr/local/lib/python3.8/dist-packages')
       print(sys.path)
       ```
 

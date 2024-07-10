@@ -32,7 +32,7 @@ Follow the steps below to use the 3D drone detection model:
      - Download Miniconda package [here](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh)
    ```bash
    cd ~/Downloads
-   bash Miniconda3-latest-Linux-x86_64.sh
+   bash Miniconda3-latest-Linux-aarch64.sh
    ```
 
 3. **Install Ecal**

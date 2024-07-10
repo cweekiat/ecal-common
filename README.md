@@ -29,7 +29,7 @@ The code in this repository provides the following functionalities:
 Follow the steps below to use the 3D drone detection model:
 
 1. **Install MiniConda3**
-     - Download Miniconda package [here](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
+     - Download Miniconda package [here](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh)
    ```bash
    cd ~/Downloads
    bash Miniconda3-latest-Linux-x86_64.sh

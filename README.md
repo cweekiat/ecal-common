@@ -38,7 +38,7 @@ Follow the steps below to use the 3D drone detection model:
 3. **Install Ecal**
    In a new terminal
    ```bash
-   sudo add-apt-repository ppa:ecal/ecal-5.12
+   sudo add-apt-repository ppa:ecal/ecal-5.11
    sudo apt-get update
    sudo apt-get install ecal
    

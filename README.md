@@ -47,7 +47,7 @@ Follow the steps below to use the 3D drone detection model:
 5. **Create Conda Environment**
    ```bash
    cd ecal-common/python
-   conda create -n vilota python=3.10
+   conda create -n vilota python=3.8
    ```
 
 6. **Install Dependencies:**
